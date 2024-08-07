@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       
-      <h1 className='bg-black py-4 text-white'  >hellpodjwdjw</h1>
+      
     </>
   )
 }
