@@ -1,9 +1,9 @@
 import React from 'react'
 
-function Logo({width="20px" ,height="10px"}) {
+function Logo({width="w-[50%]" ,height="h-[50%]"}) {
     return (
-        <div className={`w-[${width}]  h-[${height}] ` }   >
-            <img src="health.svg" alt="" />   
+        <div className={`${width}  ${height} ` }   >
+            <img src="/icon.png" alt="" />   
         </div>
         
     )
