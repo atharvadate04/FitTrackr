@@ -1,0 +1,54 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import os
+import time
+import requests
+
+def download_google_images(query, num_images, save_dir):
+    # Set up the Chrome WebDriver
+    driver = webdriver.Chrome()  # Ensure the correct path to chromedriver is set if needed
+    search_url = f"https://www.google.com/search?q={query}&tbm=isch"
+    driver.get(search_url)
+
+    # Scroll down to load more images
+    for _ in range(5):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+    # Locate image elements
+    images = driver.find_elements(By.CSS_SELECTOR, "img.rg_i")
+
+    # Create directory if it doesn't exist
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    count = 0
+    for img in images:
+        if count >= num_images:
+            break
+        try:
+            img.click()
+            time.sleep(2)
+            # Select the large version of the image
+            large_img = driver.find_element(By.CSS_SELECTOR, "img.n3VNCb")
+            img_url = large_img.get_attribute("src")
+            if img_url and "http" in img_url:
+                save_path = os.path.join(save_dir, f"{query.replace(' ', '_')}_{count+1}.jpg")
+                img_data = requests.get(img_url).content
+                with open(save_path, 'wb') as file:
+                    file.write(img_data)
+                print(f"Downloaded image {count+1}: {img_url}")
+                count += 1
+            else:
+                print(f"Invalid image URL for image {count+1}")
+        except Exception as e:
+            print(f"Failed to download image {count+1}: {e}")
+
+    driver.quit()
+
+# Usage
+query = "overcrowded train station"
+num_images = 25
+save_dir = r"C:\Users\LENOVO\Documents\Dataset1"
+
+download_google_images(query, num_images, save_dir)
